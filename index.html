@@ -1,0 +1,1917 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0f">
+<title>ジム コスパ診断 | GYM COST PERFORMANCE ANALYZER</title>
+<meta name="description" content="あなたのジム代、本当にペイできてますか？1回あたりのコスト・年間損失・継続/乗り換え/解約の3択比較で最適解を出す。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+:root {
+  --bg: #0a0a0f;
+  --card: #0d1421;
+  --border: #1e2d40;
+  --border-strong: #2d4055;
+  --text: #f0f4f8;
+  --muted: #94a5b8;
+  --dim: #4a5568;
+  --green: #22c55e;
+  --green-dark: #16a34a;
+  --cyan: #06b6d4;
+  --cyan-dark: #0e7490;
+  --amber: #f59e0b;
+  --orange: #f97316;
+  --red: #ef4444;
+  --red-dark: #dc2626;
+  --gold: #d4a853;
+  --glow-green: rgba(34,197,94,0.5);
+  --glow-cyan: rgba(6,182,212,0.5);
+  --glow-amber: rgba(245,158,11,0.4);
+  --glow-orange: rgba(249,115,22,0.4);
+  --glow-red: rgba(239,68,68,0.5);
+  --glow-gold: rgba(212,168,83,0.4);
+}
+
+html, body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+.app {
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 0 0 40px;
+  position: relative;
+  min-height: 100vh;
+}
+
+/* ============== HERO ============== */
+.hero {
+  padding: 40px 24px 24px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -50%; left: -50%;
+  width: 200%; height: 200%;
+  background: radial-gradient(circle, rgba(34,197,94,0.12) 0%, rgba(6,182,212,0.06) 30%, transparent 60%);
+  pointer-events: none;
+}
+
+.hero > * { position: relative; z-index: 1; }
+
+.label-en {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700;
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  color: var(--green);
+  margin-bottom: 18px;
+  text-shadow: 0 0 12px var(--glow-green);
+}
+
+.hero-visual {
+  width: 240px;
+  height: 180px;
+  margin: 0 auto 20px;
+}
+
+.hero-visual svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 4px 20px rgba(34,197,94,0.25));
+}
+
+.hero h1 {
+  font-weight: 900;
+  font-size: 30px;
+  letter-spacing: 0.04em;
+  margin-bottom: 14px;
+  line-height: 1.3;
+}
+
+.hero h1 span {
+  background: linear-gradient(135deg, var(--green) 0%, var(--cyan) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 30px var(--glow-green);
+  display: inline-block;
+  margin-top: 4px;
+}
+
+.hero .sub {
+  font-size: 14px;
+  color: var(--text);
+  line-height: 1.7;
+  margin-bottom: 24px;
+  font-weight: 700;
+}
+
+.impact-box {
+  background: rgba(34,197,94,0.06);
+  border: 1px solid rgba(34,197,94,0.2);
+  border-radius: 12px;
+  padding: 16px;
+  margin: 0 8px;
+  text-align: left;
+}
+
+.impact-row { font-size: 11px; color: var(--muted); line-height: 1.6; padding: 6px 0; }
+.impact-row strong { color: var(--green); font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 12px; }
+.impact-row + .impact-row { border-top: 1px solid rgba(34,197,94,0.1); margin-top: 4px; padding-top: 8px; }
+.impact-source { font-size: 9px; color: var(--dim); margin-top: 2px; }
+
+/* ============== PROGRESS BAR ============== */
+.progress-wrap { padding: 0 24px; margin: 24px 0 16px; }
+.progress-info { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+.progress-label { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 10px; letter-spacing: 0.2em; color: var(--green); }
+.progress-step { font-family: 'Orbitron', sans-serif; font-size: 11px; color: var(--muted); }
+.progress { display: flex; gap: 6px; }
+.prog-seg { flex: 1; height: 5px; background: var(--border); border-radius: 3px; position: relative; overflow: hidden; }
+.prog-seg.active { background: linear-gradient(90deg, var(--green), var(--cyan)); box-shadow: 0 0 12px var(--glow-green); }
+.prog-seg.active::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+  animation: shimmer 2s linear infinite;
+}
+@keyframes shimmer { 0%{transform:translateX(-100%)} 100%{transform:translateX(100%)} }
+
+/* ============== FORM ============== */
+.step { padding: 0 24px; }
+.step-title { font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+.step-desc { font-size: 12px; color: var(--muted); margin-bottom: 24px; }
+
+.field { margin-bottom: 22px; }
+.field-label {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 12px; color: var(--muted); margin-bottom: 10px;
+  font-weight: 500; letter-spacing: 0.04em;
+}
+.field-label .val {
+  font-family: 'Orbitron', sans-serif; font-weight: 700;
+  color: var(--green); font-size: 14px;
+  text-shadow: 0 0 8px var(--glow-green);
+}
+.q-num {
+  display: inline-block; font-family: 'Orbitron', sans-serif;
+  font-size: 10px; font-weight: 700; color: var(--green); margin-right: 6px;
+}
+
+/* ============== GYM SELECTION ============== */
+.gym-list {
+  display: grid; grid-template-columns: 1fr;
+  gap: 6px;
+  max-height: 320px;
+  overflow-y: auto;
+  padding: 4px 4px 4px 0;
+}
+.gym-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 14px;
+  cursor: pointer;
+  transition: all 0.15s;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.gym-card:hover { border-color: var(--border-strong); }
+.gym-card.active {
+  background: rgba(34,197,94,0.08);
+  border-color: var(--green);
+  box-shadow: 0 0 16px rgba(34,197,94,0.2);
+}
+.gym-card:active { transform: scale(0.98); }
+.gym-card-icon { font-size: 24px; }
+.gym-card-info { flex: 1; min-width: 0; }
+.gym-card-name { font-size: 13px; font-weight: 700; color: var(--text); }
+.gym-card-monthly {
+  font-family: 'Orbitron', sans-serif; font-size: 12px;
+  color: var(--green); margin-top: 2px;
+}
+.gym-card-features { font-size: 10px; color: var(--muted); margin-top: 3px; line-height: 1.4; }
+
+/* ============== DIRECT INPUT ============== */
+.direct-input-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-top: 10px;
+  display: none;
+}
+.direct-input-wrap.show { display: block; }
+.direct-input-wrap label {
+  display: block; font-size: 11px; color: var(--muted);
+  margin: 10px 0 6px; font-weight: 700;
+}
+.direct-input-wrap label:first-child { margin-top: 0; }
+.input-row {
+  display: flex; align-items: center; gap: 6px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 8px 10px;
+  transition: border-color 0.15s;
+}
+.input-row:focus-within { border-color: var(--green); box-shadow: 0 0 10px rgba(34,197,94,0.2); }
+.input-row input, #gymNameInput {
+  background: transparent; border: none; outline: none;
+  color: var(--text); font-family: 'Orbitron', sans-serif;
+  font-size: 14px; font-weight: 700; flex: 1; width: 100%;
+}
+#gymNameInput {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 6px; padding: 8px 10px;
+  font-family: 'Noto Sans JP', sans-serif;
+  font-size: 13px;
+}
+#gymNameInput:focus { border-color: var(--green); box-shadow: 0 0 10px rgba(34,197,94,0.2); }
+.input-row span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.input-row input::-webkit-outer-spin-button,
+.input-row input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.input-row input[type=number] { -moz-appearance: textfield; }
+
+/* ============== SELECTED GYM CARD ============== */
+.selected-gym {
+  background: linear-gradient(135deg, rgba(34,197,94,0.08), rgba(6,182,212,0.05));
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 12px;
+  padding: 14px;
+  margin-bottom: 16px;
+}
+.selected-gym-title {
+  font-family: 'Orbitron', sans-serif; font-size: 9px;
+  color: var(--green); letter-spacing: 0.15em; margin-bottom: 6px;
+}
+.selected-gym-name {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  display: flex; align-items: center; gap: 8px;
+}
+.selected-gym-details {
+  display: flex; gap: 14px; margin-top: 8px; font-size: 11px;
+}
+.selected-gym-details span { color: var(--muted); }
+.selected-gym-details strong { color: var(--green); font-family: 'Orbitron', sans-serif; }
+
+/* ============== SLIDER ============== */
+.slider-wrap {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px;
+}
+input[type="range"] {
+  -webkit-appearance: none; width: 100%;
+  height: 4px; background: var(--border);
+  border-radius: 4px; outline: none;
+  margin: 8px 0 4px;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 22px; height: 22px;
+  background: #fff; border-radius: 50%; cursor: pointer;
+  border: 3px solid var(--green);
+  box-shadow: 0 0 12px var(--glow-green);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 22px; height: 22px;
+  background: #fff; border-radius: 50%; cursor: pointer;
+  border: 3px solid var(--green);
+  box-shadow: 0 0 12px var(--glow-green);
+}
+.slider-row { display: flex; justify-content: space-between; font-size: 10px; color: var(--dim); margin-top: 4px; }
+.slider-hint { text-align: center; margin-top: 8px; font-size: 10px; color: var(--dim); line-height: 1.5; }
+.slider-hint strong { color: var(--green); font-family: 'Noto Sans JP', sans-serif; }
+
+/* リアルタイム コスト表示 */
+.live-cost {
+  display: flex; align-items: center; justify-content: center;
+  gap: 8px; margin-top: 10px; padding: 8px 12px;
+  background: rgba(34,197,94,0.05);
+  border-radius: 6px;
+  font-size: 11px; color: var(--muted);
+  transition: all 0.3s;
+}
+.live-cost strong {
+  font-family: 'Orbitron', sans-serif; font-size: 17px;
+  font-weight: 900;
+  transition: color 0.3s, transform 0.2s;
+}
+.live-cost.bad { background: rgba(239,68,68,0.08); color: var(--red); }
+.live-cost.bad strong { color: var(--red); text-shadow: 0 0 10px var(--glow-red); }
+.live-cost.warn { background: rgba(245,158,11,0.08); color: var(--amber); }
+.live-cost.warn strong { color: var(--amber); text-shadow: 0 0 10px var(--glow-amber); }
+.live-cost.good { background: rgba(34,197,94,0.08); color: var(--green); }
+.live-cost.good strong { color: var(--green); text-shadow: 0 0 10px var(--glow-green); }
+
+.bump { transform: scale(1.12); }
+
+/* ============== QUICK BUTTONS ============== */
+.quick-btns { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px; }
+.quick-btn {
+  font-family: 'Orbitron', sans-serif; font-size: 9px;
+  padding: 5px 10px;
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 4px; color: var(--muted);
+  cursor: pointer; transition: all 0.12s;
+  white-space: nowrap; font-weight: 700;
+}
+.quick-btn:hover { border-color: var(--border-strong); color: var(--text); }
+.quick-btn.active {
+  background: rgba(34,197,94,0.12);
+  border-color: var(--green); color: var(--text);
+  box-shadow: 0 0 10px rgba(34,197,94,0.3);
+}
+
+/* ============== OPTIONS ============== */
+.opt-list { display: grid; grid-template-columns: 1fr; gap: 6px; }
+.opt-list.cols2 { grid-template-columns: 1fr 1fr; }
+
+.opt-btn {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 10px; padding: 13px 12px;
+  color: var(--muted); font-size: 13px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s;
+  font-family: 'Noto Sans JP', sans-serif;
+  text-align: left; display: flex; align-items: center; gap: 10px;
+  line-height: 1.4;
+}
+.opt-btn:hover { border-color: var(--border-strong); color: var(--text); }
+.opt-btn.active {
+  background: rgba(34,197,94,0.10);
+  border-color: var(--green); color: var(--text);
+  box-shadow: 0 0 16px rgba(34,197,94,0.25);
+  font-weight: 700;
+}
+.opt-btn:active { transform: scale(0.98); }
+.opt-emoji { font-size: 18px; flex-shrink: 0; }
+
+/* ============== ACTION BUTTONS ============== */
+.btn-row {
+  display: grid; grid-template-columns: 1fr 2fr;
+  gap: 10px; margin-top: 28px;
+}
+.btn {
+  padding: 16px 12px; border-radius: 12px;
+  font-size: 14px; font-weight: 700;
+  cursor: pointer; border: none;
+  transition: all 0.2s;
+  font-family: 'Noto Sans JP', sans-serif;
+  letter-spacing: 0.04em;
+}
+.btn-back {
+  background: var(--card); border: 1px solid var(--border);
+  color: var(--muted);
+}
+.btn-back:hover { border-color: var(--border-strong); color: var(--text); }
+.btn-next, .btn-calc {
+  background: linear-gradient(135deg, var(--green) 0%, var(--cyan) 100%);
+  color: white;
+  box-shadow: 0 4px 16px rgba(34,197,94,0.4);
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 700; letter-spacing: 0.1em;
+}
+.btn-next:hover, .btn-calc:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(34,197,94,0.5);
+}
+.btn-full { grid-column: 1 / -1; }
+
+/* ============== RESULT ============== */
+#result { padding: 0 16px; }
+.result-section { margin-bottom: 28px; }
+.section-label {
+  font-family: 'Orbitron', sans-serif; font-weight: 700;
+  font-size: 10px; letter-spacing: 0.3em;
+  color: var(--green); text-align: center; margin-bottom: 12px;
+}
+
+/* メインコスト */
+.main-cost-card {
+  background: linear-gradient(180deg, rgba(239,68,68,0.08) 0%, rgba(13,20,33,0.95) 100%);
+  border: 1px solid rgba(239,68,68,0.3);
+  border-radius: 20px;
+  padding: 28px 20px;
+  text-align: center;
+  animation: shockFlash 1.6s ease-out;
+}
+.main-cost-card.good {
+  background: linear-gradient(180deg, rgba(34,197,94,0.08) 0%, rgba(13,20,33,0.95) 100%);
+  border-color: rgba(34,197,94,0.3);
+  animation: shockFlashGreen 1.6s ease-out;
+}
+@keyframes shockFlash {
+  0%{background-color:rgba(239,68,68,0)} 15%{background-color:rgba(239,68,68,0.15)} 100%{background-color:rgba(239,68,68,0)}
+}
+@keyframes shockFlashGreen {
+  0%{background-color:rgba(34,197,94,0)} 15%{background-color:rgba(34,197,94,0.15)} 100%{background-color:rgba(34,197,94,0)}
+}
+
+.main-cost-title { font-size: 12px; color: var(--muted); margin-bottom: 8px; }
+.main-cost-sub-label { font-size: 13px; color: var(--text); font-weight: 700; margin-bottom: 4px; }
+.main-cost-amount {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900; font-size: 56px;
+  letter-spacing: -0.04em;
+  line-height: 1.1;
+  margin-bottom: 6px;
+  transition: color 0.3s, text-shadow 0.3s;
+}
+.main-cost-amount.bad { color: var(--red); text-shadow: 0 0 30px var(--glow-red); }
+.main-cost-amount.warn { color: var(--amber); text-shadow: 0 0 30px var(--glow-amber); }
+.main-cost-amount.danger { color: var(--orange); text-shadow: 0 0 30px var(--glow-orange); }
+.main-cost-amount.good { color: var(--green); text-shadow: 0 0 30px var(--glow-green); }
+
+.main-cost-sub { font-size: 12px; color: var(--muted); margin-bottom: 16px; }
+
+.cost-status {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; margin-top: 16px; padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.08);
+}
+.cost-status-item { text-align: center; }
+.cost-status-label { font-size: 10px; color: var(--dim); margin-bottom: 4px; }
+.cost-status-value { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 15px; }
+.cost-status-value.target { color: var(--amber); }
+.cost-status-value.now-bad { color: var(--red); }
+.cost-status-value.now-good { color: var(--green); }
+
+/* 年間損失バーチャート */
+.loss-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px;
+}
+.loss-title { font-size: 14px; font-weight: 700; margin-bottom: 16px; text-align: center; }
+
+.bar-item { margin-bottom: 14px; }
+.bar-info {
+  display: flex; justify-content: space-between; align-items: baseline;
+  font-size: 12px; margin-bottom: 6px;
+}
+.bar-name { color: var(--text); font-weight: 500; }
+.bar-amount { font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 13px; }
+.bar-amount.red { color: var(--red); }
+.bar-amount.green { color: var(--green); }
+.bar-track {
+  height: 12px; background: var(--bg);
+  border-radius: 6px; overflow: hidden;
+}
+.bar-fill {
+  height: 100%; border-radius: 6px;
+  transform: scaleX(0); transform-origin: left;
+  animation: barGrow 0.9s cubic-bezier(0.34,1.56,0.64,1) forwards;
+}
+.bar-fill.red {
+  background: linear-gradient(90deg, var(--red), var(--red-dark));
+  box-shadow: 0 0 12px var(--glow-red); animation-delay: 0.1s;
+}
+.bar-fill.green {
+  background: linear-gradient(90deg, var(--green), var(--green-dark));
+  box-shadow: 0 0 12px var(--glow-green); animation-delay: 0.4s;
+}
+@keyframes barGrow { to { transform: scaleX(1); } }
+
+.loss-diff {
+  margin-top: 14px; padding: 12px;
+  background: rgba(239,68,68,0.06);
+  border: 1px solid rgba(239,68,68,0.25);
+  border-radius: 10px;
+  text-align: center;
+  font-size: 12px;
+}
+.loss-diff strong {
+  display: block; margin-top: 4px;
+  font-family: 'Orbitron', sans-serif; font-size: 24px;
+  color: var(--red); text-shadow: 0 0 16px var(--glow-red);
+}
+.loss-five-year {
+  margin-top: 10px; font-size: 11px; color: var(--muted);
+}
+.loss-five-year strong { color: var(--red); font-family: 'Orbitron', sans-serif; font-size: 14px; }
+
+/* ペイ目標カード */
+.pay-target-card {
+  background: linear-gradient(180deg, rgba(34,197,94,0.08) 0%, var(--card) 100%);
+  border: 1px solid rgba(34,197,94,0.3);
+  border-radius: 16px;
+  padding: 22px 18px;
+}
+.pay-target-title {
+  font-size: 14px; font-weight: 700; text-align: center;
+  margin-bottom: 16px;
+}
+.pay-target-title strong { color: var(--green); }
+
+.pay-target-status {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; padding: 12px;
+  background: rgba(13,20,33,0.5); border-radius: 10px;
+  margin-bottom: 12px;
+}
+.pay-status-side { text-align: center; }
+.pay-status-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+.pay-status-value {
+  font-family: 'Orbitron', sans-serif; font-weight: 900;
+  font-size: 22px;
+}
+.pay-status-value.current { color: var(--red); }
+.pay-status-value.target { color: var(--green); text-shadow: 0 0 12px var(--glow-green); }
+.pay-status-unit { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.pay-explain {
+  font-size: 12px; color: var(--text);
+  line-height: 1.7;
+  padding: 12px;
+  background: rgba(13,20,33,0.5);
+  border-left: 3px solid var(--green);
+  border-radius: 8px;
+}
+.pay-explain strong { color: var(--green); }
+
+/* カレンダーSVG */
+.calendar-svg-wrap {
+  margin-top: 14px;
+  padding: 12px;
+  background: rgba(13,20,33,0.5);
+  border-radius: 10px;
+}
+.calendar-svg { width: 100%; height: auto; display: block; }
+.cal-legend {
+  display: flex; justify-content: center; gap: 14px;
+  margin-top: 10px; font-size: 10px;
+}
+.cal-legend-item { display: flex; align-items: center; gap: 4px; color: var(--muted); }
+.cal-legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.cal-legend-dot.current { background: var(--red); }
+.cal-legend-dot.target { background: var(--green); }
+
+/* 3択比較 */
+.options-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 18px 16px;
+}
+.options-title {
+  font-size: 14px; font-weight: 700; text-align: center;
+  margin-bottom: 14px;
+}
+
+.option-item {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px;
+  margin-bottom: 10px;
+  opacity: 0; transform: translateX(-20px);
+  animation: optSlide 0.5s ease forwards;
+}
+.option-item.o1 { animation-delay: 0.1s; }
+.option-item.o2 { animation-delay: 0.3s; }
+.option-item.o3 { animation-delay: 0.5s; }
+@keyframes optSlide { to { opacity: 1; transform: translateX(0); } }
+
+.option-item.recommended {
+  border-color: var(--green);
+  box-shadow: 0 0 18px rgba(34,197,94,0.25);
+  background: linear-gradient(135deg, rgba(34,197,94,0.06), var(--bg));
+}
+
+.option-header {
+  display: flex; align-items: center;
+  gap: 8px; margin-bottom: 10px;
+}
+.option-badge {
+  font-family: 'Orbitron', sans-serif; font-size: 11px;
+  font-weight: 900; color: var(--text);
+  width: 24px; height: 24px;
+  background: var(--border-strong);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.option-item.recommended .option-badge {
+  background: var(--green); color: var(--bg);
+  box-shadow: 0 0 12px var(--glow-green);
+}
+.option-title {
+  font-size: 13px; font-weight: 700; color: var(--text);
+  flex: 1;
+}
+.recommend-tag {
+  font-size: 9px;
+  background: var(--green); color: var(--bg);
+  padding: 3px 8px; border-radius: 4px;
+  font-family: 'Orbitron', sans-serif; font-weight: 900;
+  letter-spacing: 0.1em;
+}
+
+.option-amounts {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 10px; padding: 10px;
+  background: rgba(13,20,33,0.5);
+  border-radius: 8px;
+}
+.option-amount-item { text-align: center; }
+.option-amount-label { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+.option-amount-value {
+  font-family: 'Orbitron', sans-serif; font-weight: 700;
+  font-size: 14px; color: var(--text);
+}
+.option-amount-value.saving { color: var(--green); }
+.option-saving-row {
+  margin-top: 8px; padding: 8px; text-align: center;
+  background: rgba(34,197,94,0.08);
+  border-radius: 6px;
+  font-size: 11px;
+}
+.option-saving-row strong {
+  font-family: 'Orbitron', sans-serif; font-weight: 900;
+  color: var(--green); font-size: 14px;
+  margin-left: 6px;
+}
+.option-reason {
+  margin-top: 8px;
+  font-size: 11px; color: var(--muted);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* 処方箋 */
+.prescription-card {
+  background: linear-gradient(135deg, var(--card), rgba(6,182,212,0.04));
+  border: 1px solid rgba(6,182,212,0.3);
+  border-radius: 16px;
+  padding: 20px 16px;
+}
+.prescription-title {
+  font-size: 14px; font-weight: 700; text-align: center;
+  margin-bottom: 16px;
+  color: var(--cyan);
+}
+.prescription-item {
+  margin-bottom: 14px;
+  padding: 14px;
+  background: var(--bg);
+  border-left: 3px solid var(--cyan);
+  border-radius: 8px;
+}
+.prescription-item:last-child { margin-bottom: 0; }
+.prescription-reason {
+  font-size: 12px; color: var(--cyan);
+  font-weight: 700; margin-bottom: 8px;
+  display: flex; align-items: center; gap: 6px;
+}
+.prescription-text {
+  font-size: 12px; color: var(--text);
+  line-height: 1.7;
+}
+.prescription-text strong { color: var(--green); }
+
+/* 比較カード */
+.cmp-grid-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px;
+}
+.cmp-grid-title { font-size: 14px; font-weight: 700; text-align: center; margin-bottom: 16px; }
+.cmp-grid-title strong { color: var(--red); font-family: 'Orbitron', sans-serif; }
+.cmp-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+}
+.cmp-item {
+  background: var(--bg); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 10px;
+  text-align: center;
+  opacity: 0; transform: translateY(20px);
+  transition: all 0.5s cubic-bezier(0.34,1.56,0.64,1);
+}
+.cmp-item.visible { opacity: 1; transform: translateY(0); }
+.cmp-emoji { font-size: 22px; margin-bottom: 6px; }
+.cmp-label { font-size: 10px; color: var(--muted); margin-bottom: 4px; }
+.cmp-value {
+  font-family: 'Orbitron', sans-serif; font-weight: 700;
+  font-size: 15px; color: var(--green);
+  text-shadow: 0 0 8px var(--glow-green);
+}
+
+/* note CTA */
+.note-cta-banner {
+  display: block; text-decoration: none;
+  background: linear-gradient(135deg, rgba(34,197,94,0.10), rgba(6,182,212,0.07));
+  border: 1px solid rgba(34,197,94,0.35);
+  border-radius: 14px;
+  padding: 18px;
+  transition: all 0.2s;
+  box-shadow: 0 4px 16px rgba(34,197,94,0.1);
+}
+.note-cta-banner:hover, .note-cta-banner:active {
+  border-color: rgba(34,197,94,0.7);
+  background: linear-gradient(135deg, rgba(34,197,94,0.16), rgba(6,182,212,0.12));
+  transform: translateY(-2px);
+}
+.note-cta-inner { display: flex; align-items: center; gap: 14px; }
+.note-cta-left { flex: 1; min-width: 0; }
+.note-cta-label {
+  font-size: 10px; letter-spacing: 0.15em;
+  color: var(--green); font-family: 'Orbitron', sans-serif;
+  font-weight: 700; margin-bottom: 6px;
+}
+.note-cta-title { font-size: 13px; color: var(--text); line-height: 1.5; margin-bottom: 6px; font-weight: 700; }
+.note-cta-title strong { color: var(--green); font-weight: 900; }
+.note-cta-sub { font-size: 10px; color: var(--muted); line-height: 1.6; }
+.note-cta-right {
+  text-align: center; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center; gap: 6px;
+}
+.note-cta-price {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px; font-weight: 900;
+  color: var(--gold); text-shadow: 0 0 8px var(--glow-gold);
+}
+.note-cta-arrow { font-size: 18px; color: var(--green); transition: transform 0.2s; }
+.note-cta-banner:hover .note-cta-arrow { transform: translateX(4px); }
+
+/* Share */
+.share-card {
+  background: var(--card); border: 1px solid var(--border);
+  border-radius: 16px; padding: 20px; text-align: center;
+}
+.share-title { font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+.share-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.share-btn {
+  padding: 12px; border-radius: 10px;
+  font-size: 13px; font-weight: 700; cursor: pointer;
+  border: none; transition: all 0.2s;
+  font-family: 'Noto Sans JP', sans-serif;
+}
+.share-x { background: #000; color: white; border: 1px solid var(--border); }
+.share-x:hover { background: #1a1a1a; }
+.share-copy { background: var(--card); color: var(--muted); border: 1px solid var(--border); }
+.share-copy:hover { border-color: var(--green); color: var(--green); }
+
+/* Toast */
+.toast {
+  position: fixed; bottom: 30px; left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--card); border: 1px solid var(--green);
+  border-radius: 12px; padding: 10px 20px;
+  font-size: 12px; color: var(--green);
+  opacity: 0; pointer-events: none;
+  transition: all 0.3s; z-index: 1000;
+  box-shadow: 0 4px 20px rgba(34,197,94,0.3);
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* Footer */
+.footer {
+  margin-top: 40px; padding: 24px;
+  text-align: center; border-top: 1px solid var(--border);
+}
+.disclaimer { font-size: 10px; color: var(--dim); line-height: 1.7; margin-bottom: 12px; }
+.disclaimer strong { color: var(--muted); }
+.credit { font-size: 11px; color: var(--muted); margin-top: 16px; }
+.credit a { color: var(--green); text-decoration: none; font-weight: 700; }
+
+/* SVG Hero Animations */
+@keyframes barGrowSvg {
+  from { transform: scaleY(0); }
+  to { transform: scaleY(1); }
+}
+.bar-red-hero { transform-origin: bottom; animation: barGrowSvg 1.2s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+.bar-green-hero {
+  transform-origin: bottom;
+  transform: scaleY(0);
+  animation: barGrowSvg 1.2s cubic-bezier(0.34,1.56,0.64,1) forwards 0.4s;
+}
+
+@keyframes dumbbellFloat {
+  0%, 100% { transform: translate(145px, 90px); }
+  50% { transform: translate(145px, 84px); }
+}
+.dumbbell { animation: dumbbellFloat 3s ease-in-out infinite; }
+
+@keyframes costGlow {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.9; }
+}
+.yen-text-hero { animation: costGlow 2.5s ease-in-out infinite; }
+
+[hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- ============== HERO ============== -->
+  <header class="hero">
+    <div class="label-en">GYM COST PERFORMANCE ANALYZER</div>
+
+    <div class="hero-visual">
+      <svg viewBox="0 0 240 180" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="barRedGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#ef4444" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#ef4444" stop-opacity="0.3"/>
+          </linearGradient>
+          <linearGradient id="barGreenGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#22c55e" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#22c55e" stop-opacity="0.3"/>
+          </linearGradient>
+          <filter id="glowGreenSvg" x="-50%" y="-50%" width="200%" height="200%">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- 赤の棒（払った金額） -->
+        <rect x="40" y="40" width="32" height="100" rx="4"
+          fill="url(#barRedGrad)" class="bar-red-hero"/>
+        <text x="56" y="32" text-anchor="middle"
+          font-size="8" fill="#ef4444" font-family="Noto Sans JP, sans-serif" font-weight="700">払った</text>
+        <text x="56" y="155" text-anchor="middle"
+          font-size="8" fill="#94a5b8" font-family="Orbitron, sans-serif">¥¥¥</text>
+
+        <!-- 緑の棒（実際の価値・小さい） -->
+        <rect x="88" y="107" width="32" height="33" rx="4"
+          fill="url(#barGreenGrad)" filter="url(#glowGreenSvg)" class="bar-green-hero"/>
+        <text x="104" y="99" text-anchor="middle"
+          font-size="8" fill="#22c55e" font-family="Noto Sans JP, sans-serif" font-weight="700">使った</text>
+        <text x="104" y="155" text-anchor="middle"
+          font-size="8" fill="#94a5b8" font-family="Orbitron, sans-serif">¥</text>
+
+        <!-- 差額の矢印 -->
+        <line x1="72" y1="40" x2="88" y2="40"
+          stroke="#ef4444" stroke-width="1.5" stroke-dasharray="3,2"/>
+        <text x="80" y="36" text-anchor="middle"
+          font-size="7" fill="#94a5b8" font-family="Noto Sans JP, sans-serif">差額</text>
+
+        <!-- ダンベル -->
+        <g class="dumbbell" transform="translate(145, 90)">
+          <rect x="-26" y="-4" width="52" height="8" rx="2"
+            fill="#1e2d40" stroke="#22c55e" stroke-width="1.5"/>
+          <rect x="-40" y="-14" width="14" height="28" rx="3"
+            fill="#06b6d4" opacity="0.85" filter="url(#glowGreenSvg)"/>
+          <rect x="26" y="-14" width="14" height="28" rx="3"
+            fill="#06b6d4" opacity="0.85" filter="url(#glowGreenSvg)"/>
+        </g>
+
+        <!-- ¥? -->
+        <text x="120" y="172" text-anchor="middle"
+          font-family="Orbitron, sans-serif" font-size="16" font-weight="900"
+          fill="#22c55e" class="yen-text-hero">¥?</text>
+      </svg>
+    </div>
+
+    <h1>ジム<br><span>コスパ診断</span></h1>
+
+    <p class="sub">あなたのジム代、<br>本当にペイできてますか?</p>
+
+    <div class="impact-box">
+      <div class="impact-row">
+        🏋️ ジム会員の約 <strong>6割</strong> が「幽霊会員」といわれている
+        <div class="impact-source">健康・体力づくり事業財団（参考値）</div>
+      </div>
+      <div class="impact-row">
+        💸 ジム月額：チョコザップ<strong>¥3,278</strong>／エニタイム<strong>¥7,678</strong>
+        <div class="impact-source">各社公式サイト 2025年</div>
+      </div>
+      <div class="impact-row">
+        🚪 退会理由1位「通う時間がなくなった」<strong>38%</strong>
+        <div class="impact-source">マイナビニュース調査</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ============== PROGRESS ============== -->
+  <div class="progress-wrap">
+    <div class="progress-info">
+      <div class="progress-label">DIAGNOSIS PROGRESS</div>
+      <div class="progress-step"><span id="stepNow">1</span> / 2</div>
+    </div>
+    <div class="progress">
+      <div class="prog-seg active" id="prog1"></div>
+      <div class="prog-seg" id="prog2"></div>
+    </div>
+  </div>
+
+  <!-- ============== STEP 1 ============== -->
+  <section id="step1" class="step">
+    <h2 class="step-title">STEP 1 / ジムの情報</h2>
+    <p class="step-desc">通っているジム・回数・時給を入力</p>
+
+    <!-- 選択中のジム表示 -->
+    <div class="selected-gym" id="selectedGym">
+      <div class="selected-gym-title">SELECTED</div>
+      <div class="selected-gym-name">
+        <span id="selGymIcon">🍫</span>
+        <span id="selGymName">チョコザップ</span>
+      </div>
+      <div class="selected-gym-details">
+        <span>月額：<strong id="selGymMonthly">¥3,278</strong></span>
+        <span>入会金：<strong id="selGymInit">¥0</strong></span>
+      </div>
+    </div>
+
+    <!-- ジム選択 -->
+    <div class="field">
+      <div class="field-label"><span><span class="q-num">B1</span>ジムを選択</span></div>
+      <div class="gym-list" id="gymList"></div>
+    </div>
+
+    <!-- 直接入力 -->
+    <div class="direct-input-wrap" id="customInput">
+      <label>ジム名（任意）</label>
+      <input type="text" id="gymNameInput" placeholder="例：地元のスポーツジム">
+      <label>月額料金</label>
+      <div class="input-row">
+        <input type="number" id="monthlyInput" min="0" max="100000" step="100" placeholder="8000" value="8000">
+        <span>円/月</span>
+      </div>
+      <label>入会金（任意）</label>
+      <div class="input-row">
+        <input type="number" id="initFeeInput" min="0" max="100000" step="100" placeholder="10000" value="0">
+        <span>円</span>
+      </div>
+    </div>
+
+    <!-- 通回数 -->
+    <div class="field">
+      <div class="field-label">
+        <span><span class="q-num">B2</span>現在の月の通回数</span>
+        <span class="val"><span id="visitsVal">2</span>回</span>
+      </div>
+      <div class="slider-wrap">
+        <input type="range" id="visitsInput" min="0" max="20" step="1" value="2">
+        <div class="slider-row"><span>0回</span><span>20回</span></div>
+        <div class="quick-btns">
+          <button class="quick-btn" data-target="visitsInput" data-val="0">0回</button>
+          <button class="quick-btn" data-target="visitsInput" data-val="1">1回</button>
+          <button class="quick-btn active" data-target="visitsInput" data-val="2">2回</button>
+          <button class="quick-btn" data-target="visitsInput" data-val="4">4回</button>
+          <button class="quick-btn" data-target="visitsInput" data-val="8">8回</button>
+          <button class="quick-btn" data-target="visitsInput" data-val="12">12回</button>
+          <button class="quick-btn" data-target="visitsInput" data-val="20">20回</button>
+        </div>
+        <div class="live-cost good" id="liveCost">
+          1回あたり：<strong id="liveCostAmount">¥1,639</strong>
+        </div>
+      </div>
+    </div>
+
+    <!-- 時給 -->
+    <div class="field">
+      <div class="field-label">
+        <span><span class="q-num">B3</span>あなたの時給（時間損失換算用）</span>
+        <span class="val">¥<span id="wageVal">1,500</span></span>
+      </div>
+      <div class="slider-wrap">
+        <input type="range" id="wageInput" min="900" max="5000" step="100" value="1500">
+        <div class="slider-row"><span>¥900</span><span>¥5,000</span></div>
+        <div class="quick-btns">
+          <button class="quick-btn" data-target="wageInput" data-val="1000">¥1,000</button>
+          <button class="quick-btn active" data-target="wageInput" data-val="1500">¥1,500</button>
+          <button class="quick-btn" data-target="wageInput" data-val="2000">¥2,000</button>
+          <button class="quick-btn" data-target="wageInput" data-val="3000">¥3,000</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 契約期間 -->
+    <div class="field">
+      <div class="field-label"><span><span class="q-num">B4</span>契約開始からの期間</span></div>
+      <div class="opt-list cols2" data-q="duration">
+        <div class="opt-btn" data-val="m3">始めたばかり</div>
+        <div class="opt-btn active" data-val="m6">3〜6ヶ月</div>
+        <div class="opt-btn" data-val="y1">6ヶ月〜1年</div>
+        <div class="opt-btn" data-val="y2">1〜2年</div>
+        <div class="opt-btn" data-val="y2plus" style="grid-column:1/-1;">2年以上</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-full btn-next" id="toStep2">理想と目標へ →</button>
+    </div>
+  </section>
+
+  <!-- ============== STEP 2 ============== -->
+  <section id="step2" class="step" hidden>
+    <h2 class="step-title">STEP 2 / 理想と目標</h2>
+    <p class="step-desc">通えていない理由と目的を選択</p>
+
+    <!-- 理想の回数 -->
+    <div class="field">
+      <div class="field-label">
+        <span><span class="q-num">Q1</span>本当は週に何回通いたい?</span>
+        <span class="val"><span id="idealVal">3</span>回/週</span>
+      </div>
+      <div class="slider-wrap">
+        <input type="range" id="idealInput" min="1" max="7" step="1" value="3">
+        <div class="slider-row"><span>1回</span><span>7回</span></div>
+      </div>
+    </div>
+
+    <!-- 通えていない理由（複数可） -->
+    <div class="field">
+      <div class="field-label">
+        <span><span class="q-num">Q2</span>通えていない理由（複数選択可）</span>
+      </div>
+      <div class="opt-list" data-q="reasons" data-multi="true">
+        <div class="opt-btn" data-val="time"><span class="opt-emoji">⏰</span>仕事・時間がない</div>
+        <div class="opt-btn" data-val="tired"><span class="opt-emoji">😴</span>疲れて行く気になれない</div>
+        <div class="opt-btn" data-val="noplan"><span class="opt-emoji">🤔</span>何をすればいいか分からない</div>
+        <div class="opt-btn" data-val="distance"><span class="opt-emoji">📍</span>ジムが遠い・行きにくい</div>
+        <div class="opt-btn" data-val="cost"><span class="opt-emoji">💸</span>月額がもったいないと感じる</div>
+        <div class="opt-btn" data-val="motivation"><span class="opt-emoji">😰</span>モチベーションが続かない</div>
+      </div>
+    </div>
+
+    <!-- 目的 -->
+    <div class="field">
+      <div class="field-label"><span><span class="q-num">Q3</span>運動の目的</span></div>
+      <div class="opt-list" data-q="purpose">
+        <div class="opt-btn active" data-val="diet"><span class="opt-emoji">🔥</span>ダイエット・体重を落とす</div>
+        <div class="opt-btn" data-val="muscle"><span class="opt-emoji">💪</span>筋肉をつける・引き締める</div>
+        <div class="opt-btn" data-val="health"><span class="opt-emoji">🏃</span>体力・健康維持</div>
+        <div class="opt-btn" data-val="stress"><span class="opt-emoji">😌</span>ストレス発散・気分転換</div>
+        <div class="opt-btn" data-val="sport"><span class="opt-emoji">🎽</span>特定のスポーツのため</div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-back" id="backToStep1">← 戻る</button>
+      <button class="btn btn-calc" id="calcBtn">CALCULATE</button>
+    </div>
+  </section>
+
+  <!-- ============== RESULT ============== -->
+  <div id="result" hidden>
+
+    <!-- Section 1: メインコスト -->
+    <div class="result-section">
+      <div class="section-label">YOUR COST PER VISIT</div>
+      <div class="main-cost-card" id="mainCostCard">
+        <div class="main-cost-title">あなたのジム代</div>
+        <div class="main-cost-sub-label">1回あたり</div>
+        <div class="main-cost-amount" id="mainCostAmount">¥0</div>
+        <div class="main-cost-sub" id="mainCostStatus">診断中...</div>
+        <div class="cost-status">
+          <div class="cost-status-item">
+            <div class="cost-status-label">ペイできる回数</div>
+            <div class="cost-status-value target" id="targetVisits">月◯回</div>
+          </div>
+          <div class="cost-status-item">
+            <div class="cost-status-label">現在</div>
+            <div class="cost-status-value" id="currentVisitsStatus">月◯回</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 2: 年間損失 -->
+    <div class="result-section">
+      <div class="section-label">ANNUAL LOSS</div>
+      <div class="loss-card">
+        <div class="loss-title">📊 年間コスト vs 実際の価値</div>
+        <div class="bar-item">
+          <div class="bar-info">
+            <span class="bar-name">💸 払った金額（年間）</span>
+            <span class="bar-amount red" id="paidAnnual">¥0</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill red" id="paidBar" style="width:0%"></div></div>
+        </div>
+        <div class="bar-item">
+          <div class="bar-info">
+            <span class="bar-name">✅ 実際の価値（月◯回×¥2,000）</span>
+            <span class="bar-amount green" id="valueAnnual">¥0</span>
+          </div>
+          <div class="bar-track"><div class="bar-fill green" id="valueBar" style="width:0%"></div></div>
+        </div>
+        <div class="loss-diff">
+          年間の損失額
+          <strong id="annualLoss">¥0</strong>
+        </div>
+        <div class="loss-five-year">
+          🚨 このペースで5年続けると <strong id="fiveYearLoss">¥0</strong> の損失
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: ペイ目標 -->
+    <div class="result-section">
+      <div class="section-label">PAY-OFF TARGET</div>
+      <div class="pay-target-card">
+        <div class="pay-target-title">💡 月 <strong id="targetVisitsHL">◯回</strong> 通えばペイできます</div>
+        <div class="pay-target-status">
+          <div class="pay-status-side">
+            <div class="pay-status-label">現在</div>
+            <div class="pay-status-value current" id="currentVisitsBig">2</div>
+            <div class="pay-status-unit">回/月</div>
+          </div>
+          <div class="pay-status-side">
+            <div class="pay-status-label">目標</div>
+            <div class="pay-status-value target" id="targetVisitsBig">6</div>
+            <div class="pay-status-unit">回/月</div>
+          </div>
+        </div>
+        <div class="pay-explain" id="payExplain">
+          あと <strong>◯回</strong> 増やすだけで、1回あたりのコストが <strong>¥◯</strong> → <strong>¥2,000</strong> になります。
+        </div>
+        <!-- カレンダーSVG -->
+        <div class="calendar-svg-wrap">
+          <svg class="calendar-svg" viewBox="0 0 320 100" xmlns="http://www.w3.org/2000/svg">
+            <g id="calendar"></g>
+          </svg>
+          <div class="cal-legend">
+            <div class="cal-legend-item"><span class="cal-legend-dot current"></span>現在</div>
+            <div class="cal-legend-item"><span class="cal-legend-dot target"></span>目標</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: 3択比較 -->
+    <div class="result-section">
+      <div class="section-label">YOUR 3 OPTIONS</div>
+      <div class="options-card">
+        <div class="options-title">🎯 あなたの選択肢</div>
+        <div id="optionsList"></div>
+      </div>
+    </div>
+
+    <!-- Section 5: 処方箋 -->
+    <div class="result-section">
+      <div class="section-label">PRESCRIPTION</div>
+      <div class="prescription-card">
+        <div class="prescription-title">📋 通えていない理由への処方箋</div>
+        <div id="prescriptionList"></div>
+      </div>
+    </div>
+
+    <!-- Section 6: 比較カード -->
+    <div class="result-section">
+      <div class="section-label">WHAT YOU COULD HAVE</div>
+      <div class="cmp-grid-card">
+        <div class="cmp-grid-title">💎 年間損失 <strong id="cmpAmount">¥0</strong> でできること</div>
+        <div class="cmp-grid">
+          <div class="cmp-item" data-cmp="personal">
+            <div class="cmp-emoji">💪</div>
+            <div class="cmp-label">パーソナルジム</div>
+            <div class="cmp-value"><span id="cmpPersonal">0</span>回分</div>
+          </div>
+          <div class="cmp-item" data-cmp="book">
+            <div class="cmp-emoji">📚</div>
+            <div class="cmp-label">筋トレ専門書</div>
+            <div class="cmp-value"><span id="cmpBook">0</span>冊分</div>
+          </div>
+          <div class="cmp-item" data-cmp="protein">
+            <div class="cmp-emoji">🥗</div>
+            <div class="cmp-label">プロテイン</div>
+            <div class="cmp-value"><span id="cmpProtein">0</span>kg分</div>
+          </div>
+          <div class="cmp-item" data-cmp="travel">
+            <div class="cmp-emoji">✈️</div>
+            <div class="cmp-label">国内旅行</div>
+            <div class="cmp-value"><span id="cmpTravel">0</span>回分</div>
+          </div>
+          <div class="cmp-item" data-cmp="nisa">
+            <div class="cmp-emoji">💰</div>
+            <div class="cmp-label">NISA10年後</div>
+            <div class="cmp-value">¥<span id="cmpNisa">0</span></div>
+          </div>
+          <div class="cmp-item" data-cmp="home">
+            <div class="cmp-emoji">🏠</div>
+            <div class="cmp-label">ホームジム機材</div>
+            <div class="cmp-value"><span id="cmpHome">0</span>セット</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- noteCTA -->
+    <div class="result-section">
+      <a class="note-cta-banner" href="https://note.com/nissy1007" target="_blank" rel="noopener">
+        <div class="note-cta-inner">
+          <div class="note-cta-left">
+            <div class="note-cta-label">📖 NOTE</div>
+            <div class="note-cta-title">
+              ジム代をペイする<br>
+              <strong>「週1で続ける具体的な方法」</strong>
+            </div>
+            <div class="note-cta-sub">
+              目的別の基本メニュー・カレンダー予約の作り方・<br>
+              続かない時の最終手段まで詳しく解説
+            </div>
+          </div>
+          <div class="note-cta-right">
+            <div class="note-cta-price">¥500</div>
+            <div class="note-cta-arrow">→</div>
+          </div>
+        </div>
+      </a>
+    </div>
+
+    <!-- Share -->
+    <div class="result-section">
+      <div class="share-card">
+        <div class="share-title">結果をシェア</div>
+        <div class="share-row">
+          <button class="share-btn share-x" id="shareX">𝕏 でシェア</button>
+          <button class="share-btn share-copy" id="shareCopy">結果をコピー</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Restart -->
+    <div class="result-section">
+      <button class="btn btn-back" id="restartBtn" style="width:100%;">もう一度診断する</button>
+    </div>
+  </div>
+
+  <!-- ============== FOOTER ============== -->
+  <footer class="footer">
+    <div class="disclaimer">
+      <strong>※ 免責事項</strong><br>
+      各ジムの料金は2025年時点の参考値です。<br>
+      実際の料金はプラン・地域・キャンペーンにより異なります。<br>
+      ご入会前に各社公式サイトでご確認ください。<br><br>
+      投資・運用に関する言及は一例であり、将来の運用成果を保証するものではありません。
+    </div>
+    <div class="credit">
+      制作：<a href="https://www.tiktok.com/@Takuma_Kun_" target="_blank">Takuma</a><br>
+      <span style="color:var(--dim);font-size:10px;">人生を数値化するメディア</span>
+    </div>
+  </footer>
+
+</div>
+
+<div class="toast" id="toast">コピーしました</div>
+
+<script>
+'use strict';
+
+// ============================================
+// GYM PRESETS
+// ============================================
+const GYM_PRESETS = {
+  chocozap: { name: 'チョコザップ', monthly: 3278, initFee: 0, features: ['24時間', 'セルフエステ付き', 'コンビニジム'], icon: '🍫', bestFor: '気軽・美容も欲しい' },
+  anytime: { name: 'エニタイムフィットネス', monthly: 7678, initFee: 10000, features: ['24時間', '全国共通', 'マシン充実'], icon: '🏋️', bestFor: '出張多い・本格的に' },
+  joyfit: { name: 'JOYFIT24', monthly: 7678, initFee: 10000, features: ['24時間', '女性人気', 'セキュリティ◎'], icon: '💪', bestFor: '安心して通いたい' },
+  goldgym: { name: 'ゴールドジム', monthly: 11000, initFee: 20000, features: ['本格マシン', 'スタジオ', 'プール'], icon: '🥇', bestFor: '本格ボディメイク' },
+  konami: { name: 'コナミスポーツ', monthly: 9000, initFee: 10000, features: ['プール', 'スタジオ', '総合型'], icon: '🏊', bestFor: 'プール・スタジオも' },
+  curves: { name: 'カーブス', monthly: 7500, initFee: 10000, features: ['女性専用', '30分完結', '指導付き'], icon: '🌸', bestFor: '女性・初心者・30分で' },
+  renaissance: { name: 'ルネサンス', monthly: 9000, initFee: 10000, features: ['プール', 'スタジオ', '総合型'], icon: '🏃', bestFor: '総合的に使いたい' },
+  tipness: { name: 'ティップネス', monthly: 8800, initFee: 10000, features: ['スタジオ充実', '都市型'], icon: '🎯', bestFor: 'スタジオプログラム' },
+  twentyfour: { name: '24/7Workout', monthly: 7000, initFee: 0, features: ['24時間', 'パーソナル付'], icon: '⏰', bestFor: 'パーソナル指導も' },
+  custom: { name: 'その他（直接入力）', monthly: 0, initFee: 0, features: ['月額・入会金を直接入力'], icon: '✏️', bestFor: '' }
+};
+
+const BREAK_EVEN_COST = 2000; // ペイできる1回あたり目安
+
+// ============================================
+// STATE
+// ============================================
+const state = {
+  gym: 'chocozap',
+  monthly: 3278,
+  initFee: 0,
+  visits: 2,
+  wage: 1500,
+  duration: 'm6',
+  ideal: 3,
+  reasons: new Set(),
+  purpose: 'diet'
+};
+
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const fmt = n => '¥' + Math.floor(n).toLocaleString();
+
+// ============================================
+// STEP NAV
+// ============================================
+function showStep(n) {
+  $('#step1').hidden = n !== 1;
+  $('#step2').hidden = n !== 2;
+  $('#result').hidden = n !== 3;
+  $('#stepNow').textContent = Math.min(n, 2);
+  $('#prog1').classList.toggle('active', n >= 1);
+  $('#prog2').classList.toggle('active', n >= 2);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ============================================
+// GYM SELECTION
+// ============================================
+function renderGymList() {
+  const list = $('#gymList');
+  list.innerHTML = '';
+  Object.entries(GYM_PRESETS).forEach(([key, gym]) => {
+    const card = document.createElement('div');
+    card.className = 'gym-card' + (key === state.gym ? ' active' : '');
+    card.dataset.gym = key;
+    const monthly = key === 'custom' ? '直接入力' : '¥' + gym.monthly.toLocaleString() + '/月';
+    card.innerHTML = `
+      <div class="gym-card-icon">${gym.icon}</div>
+      <div class="gym-card-info">
+        <div class="gym-card-name">${gym.name}</div>
+        <div class="gym-card-monthly">${monthly}</div>
+        <div class="gym-card-features">${gym.features.join(' / ')}</div>
+      </div>
+    `;
+    card.addEventListener('click', () => selectGym(key));
+    list.appendChild(card);
+  });
+}
+
+function selectGym(key) {
+  state.gym = key;
+  $$('.gym-card').forEach(c => c.classList.toggle('active', c.dataset.gym === key));
+  const gym = GYM_PRESETS[key];
+  if (key === 'custom') {
+    $('#customInput').classList.add('show');
+    state.monthly = +$('#monthlyInput').value || 8000;
+    state.initFee = +$('#initFeeInput').value || 0;
+  } else {
+    $('#customInput').classList.remove('show');
+    state.monthly = gym.monthly;
+    state.initFee = gym.initFee;
+  }
+  updateSelectedGymDisplay();
+  updateLiveCost();
+}
+
+function updateSelectedGymDisplay() {
+  const gym = GYM_PRESETS[state.gym];
+  $('#selGymIcon').textContent = gym.icon;
+  if (state.gym === 'custom') {
+    const customName = $('#gymNameInput').value || 'カスタムジム';
+    $('#selGymName').textContent = customName;
+  } else {
+    $('#selGymName').textContent = gym.name;
+  }
+  $('#selGymMonthly').textContent = '¥' + state.monthly.toLocaleString();
+  $('#selGymInit').textContent = '¥' + state.initFee.toLocaleString();
+}
+
+// ============================================
+// LIVE COST CALCULATION
+// ============================================
+function updateLiveCost() {
+  const cost = state.visits > 0 ? state.monthly / state.visits : Infinity;
+  const el = $('#liveCost');
+  const amountEl = $('#liveCostAmount');
+
+  if (state.visits === 0) {
+    amountEl.textContent = '∞（完全な損失）';
+    el.className = 'live-cost bad';
+    return;
+  }
+
+  amountEl.textContent = '¥' + Math.floor(cost).toLocaleString();
+  amountEl.classList.add('bump');
+  setTimeout(() => amountEl.classList.remove('bump'), 200);
+
+  el.classList.remove('bad', 'warn', 'good');
+  if (cost > 5000) el.classList.add('bad');
+  else if (cost > 2000) el.classList.add('warn');
+  else el.classList.add('good');
+}
+
+// ============================================
+// STEP 1 BINDINGS
+// ============================================
+$('#visitsInput').addEventListener('input', e => {
+  state.visits = +e.target.value;
+  $('#visitsVal').textContent = state.visits;
+  $$('.quick-btn[data-target="visitsInput"]').forEach(b => b.classList.toggle('active', +b.dataset.val === state.visits));
+  updateLiveCost();
+});
+
+$('#wageInput').addEventListener('input', e => {
+  state.wage = +e.target.value;
+  $('#wageVal').textContent = state.wage.toLocaleString();
+  $$('.quick-btn[data-target="wageInput"]').forEach(b => b.classList.toggle('active', +b.dataset.val === state.wage));
+});
+
+$('#monthlyInput').addEventListener('input', e => {
+  if (state.gym === 'custom') {
+    state.monthly = +e.target.value || 0;
+    updateSelectedGymDisplay();
+    updateLiveCost();
+  }
+});
+$('#initFeeInput').addEventListener('input', e => {
+  if (state.gym === 'custom') {
+    state.initFee = +e.target.value || 0;
+    updateSelectedGymDisplay();
+  }
+});
+$('#gymNameInput').addEventListener('input', () => {
+  if (state.gym === 'custom') updateSelectedGymDisplay();
+});
+
+document.querySelectorAll('.opt-list').forEach(list => {
+  const q = list.dataset.q;
+  const multi = list.dataset.multi === 'true';
+  list.querySelectorAll('.opt-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (multi) {
+        btn.classList.toggle('active');
+        if (q === 'reasons') {
+          if (btn.classList.contains('active')) state.reasons.add(btn.dataset.val);
+          else state.reasons.delete(btn.dataset.val);
+        }
+      } else {
+        list.querySelectorAll('.opt-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        if (q === 'duration') state.duration = btn.dataset.val;
+        else if (q === 'purpose') state.purpose = btn.dataset.val;
+      }
+    });
+  });
+});
+
+// ============================================
+// STEP 2 BINDINGS
+// ============================================
+$('#idealInput').addEventListener('input', e => {
+  state.ideal = +e.target.value;
+  $('#idealVal').textContent = state.ideal;
+});
+
+// ============================================
+// QUICK BUTTONS COMMON
+// ============================================
+document.addEventListener('click', e => {
+  const btn = e.target.closest('.quick-btn[data-target]');
+  if (!btn) return;
+  const targetId = btn.dataset.target;
+  const val = +btn.dataset.val;
+
+  if (targetId === 'visitsInput') {
+    $('#visitsInput').value = val;
+    state.visits = val;
+    $('#visitsVal').textContent = val;
+    updateLiveCost();
+  } else if (targetId === 'wageInput') {
+    $('#wageInput').value = val;
+    state.wage = val;
+    $('#wageVal').textContent = val.toLocaleString();
+  }
+
+  btn.closest('.quick-btns').querySelectorAll('.quick-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+});
+
+// ============================================
+// NAVIGATION
+// ============================================
+$('#toStep2').addEventListener('click', () => showStep(2));
+$('#backToStep1').addEventListener('click', () => showStep(1));
+$('#calcBtn').addEventListener('click', () => { calculate(); showStep(3); });
+$('#restartBtn').addEventListener('click', () => showStep(1));
+
+// ============================================
+// COUNT UP
+// ============================================
+function countUpCost(el, target, duration = 1800) {
+  let start = null;
+  function frame(ts) {
+    if (!start) start = ts;
+    const prog = Math.min((ts - start) / duration, 1);
+    const ease = 1 - Math.pow(1 - prog, 3);
+    const cur = target * ease;
+    el.textContent = '¥' + Math.floor(cur).toLocaleString();
+    if (prog < 1) requestAnimationFrame(frame);
+    else el.textContent = '¥' + Math.floor(target).toLocaleString();
+  }
+  requestAnimationFrame(frame);
+}
+
+// ============================================
+// CALENDAR SVG
+// ============================================
+function drawCalendar(currentVisits, targetVisits) {
+  // 4週間 × 7日 = 28マス
+  const cal = $('#calendar');
+  cal.innerHTML = '';
+  const dayLabels = ['月','火','水','木','金','土','日'];
+  const cellW = 38, cellH = 22;
+  const startX = 12, startY = 14;
+
+  // 曜日ラベル
+  dayLabels.forEach((d, i) => {
+    const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    t.setAttribute('x', startX + i * cellW + cellW/2);
+    t.setAttribute('y', startY);
+    t.setAttribute('text-anchor', 'middle');
+    t.setAttribute('font-size', '9');
+    t.setAttribute('fill', '#94a5b8');
+    t.setAttribute('font-family', 'Noto Sans JP, sans-serif');
+    t.textContent = d;
+    cal.appendChild(t);
+  });
+
+  // 4週間のマス（月単位として表現）
+  for (let w = 0; w < 4; w++) {
+    for (let d = 0; d < 7; d++) {
+      const x = startX + d * cellW;
+      const y = startY + 10 + w * cellH;
+      const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+      rect.setAttribute('x', x + 4);
+      rect.setAttribute('y', y);
+      rect.setAttribute('width', cellW - 8);
+      rect.setAttribute('height', cellH - 4);
+      rect.setAttribute('rx', 3);
+      rect.setAttribute('fill', '#1e2d40');
+      rect.setAttribute('opacity', 0.4);
+      cal.appendChild(rect);
+    }
+  }
+
+  // 現在の通日（赤）
+  const currentDays = Math.min(currentVisits, 28);
+  for (let i = 0; i < currentDays; i++) {
+    const day = i * Math.floor(28 / Math.max(currentDays, 1));
+    const w = Math.floor(day / 7);
+    const d = day % 7;
+    const x = startX + d * cellW;
+    const y = startY + 10 + w * cellH;
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', x + cellW/2);
+    c.setAttribute('cy', y + (cellH - 4)/2);
+    c.setAttribute('r', 5);
+    c.setAttribute('fill', '#ef4444');
+    c.style.opacity = '0';
+    c.style.animation = `fadeIn 0.3s ease forwards ${0.3 + i * 0.05}s`;
+    cal.appendChild(c);
+  }
+
+  // 目標の通日（緑）- 現在より多い分だけ追加
+  const targetDays = Math.min(targetVisits, 28);
+  const additional = Math.max(0, targetDays - currentDays);
+  for (let i = 0; i < additional; i++) {
+    const day = (currentDays + i) * Math.floor(28 / Math.max(targetDays, 1));
+    const w = Math.floor(day / 7);
+    const d = day % 7;
+    const x = startX + d * cellW;
+    const y = startY + 10 + w * cellH;
+    const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+    c.setAttribute('cx', x + cellW/2);
+    c.setAttribute('cy', y + (cellH - 4)/2);
+    c.setAttribute('r', 5);
+    c.setAttribute('fill', '#22c55e');
+    c.setAttribute('filter', 'drop-shadow(0 0 4px #22c55e)');
+    c.style.opacity = '0';
+    c.style.animation = `fadeIn 0.3s ease forwards ${0.8 + i * 0.08}s`;
+    cal.appendChild(c);
+  }
+
+  // CSS for fadeIn
+  if (!$('#calStyleInj')) {
+    const s = document.createElement('style');
+    s.id = 'calStyleInj';
+    s.textContent = '@keyframes fadeIn { to { opacity: 1; } }';
+    document.head.appendChild(s);
+  }
+}
+
+// ============================================
+// RECOMMENDATION LOGIC
+// ============================================
+function recommendOption() {
+  if (state.visits <= 1) {
+    return { letter: 'C', reason: '月1回以下では完全に損失。解約か乗り換えを推奨' };
+  }
+  if (state.reasons.has('distance')) {
+    return { letter: 'C', reason: 'ジムが遠いことが続かない最大の原因。解約か乗り換えが現実的' };
+  }
+  if (state.reasons.has('cost') || (state.monthly > 5000 && state.visits < 4)) {
+    return { letter: 'B', reason: 'チョコザップなどの低価格ジムなら、回数が少なくても損失が小さい' };
+  }
+  if (state.reasons.has('time') && state.visits < 3) {
+    return { letter: 'B', reason: '24時間ジムに乗り換えれば、深夜・早朝に通えます' };
+  }
+  if (state.visits >= 4) {
+    return { letter: 'A', reason: '十分にペイできているか近づいているため、継続が正解' };
+  }
+  return { letter: 'B', reason: '通えていない原因を考えると、乗り換えが現実的な選択肢' };
+}
+
+// ============================================
+// PRESCRIPTIONS
+// ============================================
+const PRESCRIPTIONS = {
+  time: {
+    emoji: '⏰',
+    name: '仕事・時間がない',
+    text: '週1回30分のジムを <strong>「カレンダーに予約」</strong> する。「絶対に行ける日」を1日選んで今すぐカレンダーに入れてください。「行こうと思う」は続かない。「予約済み」なら行く。'
+  },
+  tired: {
+    emoji: '😴',
+    name: '疲れて行く気になれない',
+    text: '<strong>仕事帰りに直接立ち寄る</strong> ルートを作る。家に帰ると行けない。ロッカーにウェアを置いておくと心理的ハードルが下がる。'
+  },
+  noplan: {
+    emoji: '🤔',
+    name: '何をすればいいか分からない',
+    text: '目的別の <strong>「基本3メニュー」</strong> だけ覚える。ダイエットなら：①トレッドミル20分 ②自重スクワット3セット ③ストレッチ10分。それ以外は考えない。'
+  },
+  distance: {
+    emoji: '📍',
+    name: 'ジムが遠い・行きにくい',
+    text: '<strong>「片道15分以内」</strong> でないと続きません。今のジムは正直、立地が原因。自宅・職場の <strong>近くのジムに乗り換え</strong> るか、自宅トレに切り替えるのが現実的。'
+  },
+  cost: {
+    emoji: '💸',
+    name: '月額がもったいない',
+    text: '<strong>チョコザップ（¥3,278/月）</strong> に乗り換えれば、月2回でも1回¥1,639で済む。「もったいない」が消える価格帯です。'
+  },
+  motivation: {
+    emoji: '😰',
+    name: 'モチベーションが続かない',
+    text: '目標回数を <strong>下げる</strong>。週3回を週1回にする。ハードルを下げた目標が、結果的に週2〜3回に育つ。「行けない自分」を責めるのが最大の敵。'
+  }
+};
+
+// ============================================
+// MAIN CALCULATE
+// ============================================
+function calculate() {
+  const monthly = state.monthly;
+  const initFee = state.initFee;
+  const visits = state.visits;
+  const ideal = state.ideal;
+  const wage = state.wage;
+
+  // A. 1回あたりコスト
+  const costPerVisit = visits > 0 ? monthly / visits : monthly * 2; // 0回時は月額×2を表示
+
+  // B. ペイできる回数
+  const breakEvenVisits = Math.ceil(monthly / BREAK_EVEN_COST);
+
+  // C. 年間・5年損失
+  const annualPaid = monthly * 12 + initFee;
+  const actualValue = visits * 12 * BREAK_EVEN_COST;
+  const annualLoss = Math.max(0, annualPaid - actualValue);
+  const fiveYearLoss = annualLoss * 5;
+
+  // D. 3択比較
+  const currentAnnual = annualPaid;
+  const current5Year = currentAnnual * 5;
+  const chocozapAnnual = 3278 * 12;
+  const chocozapSaving = currentAnnual - chocozapAnnual;
+  const cancelSaving = currentAnnual;
+
+  const rec = recommendOption();
+
+  // === RENDER ===
+
+  // Section 1: メインコスト
+  const mainCardEl = $('#mainCostCard');
+  const mainAmountEl = $('#mainCostAmount');
+  mainCardEl.classList.toggle('good', costPerVisit <= 2000);
+  mainAmountEl.classList.remove('bad','warn','danger','good');
+  if (visits === 0) {
+    mainAmountEl.textContent = '∞';
+    mainAmountEl.classList.add('bad');
+  } else if (costPerVisit > 5000) {
+    countUpCost(mainAmountEl, costPerVisit);
+    mainAmountEl.classList.add('bad');
+  } else if (costPerVisit > 3500) {
+    countUpCost(mainAmountEl, costPerVisit);
+    mainAmountEl.classList.add('danger');
+  } else if (costPerVisit > 2000) {
+    countUpCost(mainAmountEl, costPerVisit);
+    mainAmountEl.classList.add('warn');
+  } else {
+    countUpCost(mainAmountEl, costPerVisit);
+    mainAmountEl.classList.add('good');
+  }
+
+  let statusText = '';
+  if (visits === 0) statusText = '月0回 = 完全な損失';
+  else if (costPerVisit > 5000) statusText = '🚨 大幅に損しています';
+  else if (costPerVisit > 3500) statusText = '⚠️ かなり損しています';
+  else if (costPerVisit > 2000) statusText = '⚠️ もう少し通えばペイできる';
+  else statusText = '✅ ペイできています';
+  $('#mainCostStatus').textContent = statusText;
+
+  $('#targetVisits').textContent = '月' + breakEvenVisits + '回以上';
+  const cvs = $('#currentVisitsStatus');
+  cvs.textContent = '月' + visits + '回';
+  cvs.classList.remove('now-bad','now-good');
+  cvs.classList.add(visits >= breakEvenVisits ? 'now-good' : 'now-bad');
+
+  // Section 2: 年間損失
+  $('#paidAnnual').textContent = fmt(annualPaid);
+  $('#valueAnnual').textContent = fmt(actualValue);
+  const maxBar = Math.max(annualPaid, actualValue, 1);
+  $('#paidBar').style.width = (annualPaid / maxBar * 100) + '%';
+  $('#valueBar').style.width = (actualValue / maxBar * 100) + '%';
+  $('#annualLoss').textContent = fmt(annualLoss);
+  $('#fiveYearLoss').textContent = fmt(fiveYearLoss);
+
+  // Section 3: ペイ目標
+  $('#targetVisitsHL').textContent = breakEvenVisits + '回';
+  $('#currentVisitsBig').textContent = visits;
+  $('#targetVisitsBig').textContent = breakEvenVisits;
+  const diff = Math.max(0, breakEvenVisits - visits);
+  if (diff > 0) {
+    $('#payExplain').innerHTML = `あと <strong>${diff}回</strong> 増やすだけで、1回あたりのコストが <strong>¥${Math.floor(costPerVisit).toLocaleString()}</strong> → <strong>¥${BREAK_EVEN_COST.toLocaleString()}</strong> になります。`;
+  } else {
+    $('#payExplain').innerHTML = `✅ すでに <strong>ペイできている</strong> 状態です。このまま継続を推奨。`;
+  }
+  drawCalendar(visits, breakEvenVisits);
+
+  // Section 4: 3択比較
+  const optionsList = $('#optionsList');
+  optionsList.innerHTML = '';
+  const options = [
+    {
+      letter: 'A',
+      title: '今のジムを続ける',
+      annual: currentAnnual,
+      five: current5Year,
+      saving: 0,
+      reason: '現状維持。1回あたり¥' + Math.floor(costPerVisit).toLocaleString() + 'のままです。'
+    },
+    {
+      letter: 'B',
+      title: 'チョコザップに乗り換える',
+      annual: chocozapAnnual,
+      five: chocozapAnnual * 5,
+      saving: chocozapSaving > 0 ? chocozapSaving : 0,
+      reason: '月¥3,278の最安ジム。今のジムから乗り換えると年間¥' + Math.max(0, chocozapSaving).toLocaleString() + 'の節約。'
+    },
+    {
+      letter: 'C',
+      title: '解約して自宅トレに切替',
+      annual: 0,
+      five: 0,
+      saving: cancelSaving,
+      reason: 'ジム代¥0。¥10,000程度の自宅機材で十分始められます。'
+    }
+  ];
+
+  options.forEach((opt, i) => {
+    const item = document.createElement('div');
+    const isRecommended = opt.letter === rec.letter;
+    item.className = 'option-item o' + (i + 1) + (isRecommended ? ' recommended' : '');
+    item.innerHTML = `
+      <div class="option-header">
+        <div class="option-badge">${opt.letter}</div>
+        <div class="option-title">${opt.title}</div>
+        ${isRecommended ? '<span class="recommend-tag">★ おすすめ</span>' : ''}
+      </div>
+      <div class="option-amounts">
+        <div class="option-amount-item">
+          <div class="option-amount-label">年間</div>
+          <div class="option-amount-value">${fmt(opt.annual)}</div>
+        </div>
+        <div class="option-amount-item">
+          <div class="option-amount-label">5年間</div>
+          <div class="option-amount-value">${fmt(opt.five)}</div>
+        </div>
+      </div>
+      ${opt.saving > 0 ? `<div class="option-saving-row">現在から <strong>${fmt(opt.saving)} 節約</strong></div>` : ''}
+      <div class="option-reason">${isRecommended ? '<strong style="color:var(--green);">▶ </strong>' : ''}${opt.reason}${isRecommended ? '<br><strong style="color:var(--green);">' + rec.reason + '</strong>' : ''}</div>
+    `;
+    optionsList.appendChild(item);
+  });
+
+  // Section 5: 処方箋
+  const prescList = $('#prescriptionList');
+  prescList.innerHTML = '';
+  let hasReasons = false;
+  state.reasons.forEach(reasonKey => {
+    const p = PRESCRIPTIONS[reasonKey];
+    if (!p) return;
+    hasReasons = true;
+    const item = document.createElement('div');
+    item.className = 'prescription-item';
+    item.innerHTML = `
+      <div class="prescription-reason">${p.emoji} ${p.name}</div>
+      <div class="prescription-text">${p.text}</div>
+    `;
+    prescList.appendChild(item);
+  });
+  if (!hasReasons) {
+    prescList.innerHTML = `<div class="prescription-item"><div class="prescription-text">通えていない理由が特にないとのこと。<strong>このまま継続して問題なし</strong> です。ペイできている水準で運動できているのは素晴らしい状態。</div></div>`;
+  }
+
+  // Section 6: 比較カード
+  const lossAmount = annualLoss;
+  $('#cmpAmount').textContent = fmt(lossAmount);
+  $('#cmpPersonal').textContent = Math.floor(lossAmount / 8000);
+  $('#cmpBook').textContent = Math.floor(lossAmount / 1500);
+  $('#cmpProtein').textContent = Math.floor(lossAmount / 500); // 500円/100g目安
+  $('#cmpTravel').textContent = (lossAmount / 48000).toFixed(1);
+  // NISA 10年後 (年利3%)
+  const nisaFV = lossAmount * Math.pow(1.03, 10);
+  $('#cmpNisa').textContent = Math.floor(nisaFV / 10000) + '万';
+  $('#cmpHome').textContent = Math.floor(lossAmount / 30000); // ホームジム1セット3万円
+
+  setTimeout(() => observeCmpCards(), 200);
+
+  // Save for share
+  state.result = {
+    costPerVisit, breakEvenVisits, annualPaid, annualLoss, fiveYearLoss,
+    chocozapSaving, recommendation: rec
+  };
+}
+
+// ============================================
+// COMPARE CARDS OBSERVER
+// ============================================
+function observeCmpCards() {
+  const items = $$('.cmp-item');
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  items.forEach(item => io.observe(item));
+}
+
+// ============================================
+// SHARE
+// ============================================
+function makeShareText() {
+  if (!state.result) return '';
+  const r = state.result;
+  const cpp = Math.floor(r.costPerVisit);
+  if (cpp >= 5000) {
+    return `ジムのコスパ診断したら衝撃だった😱
+
+1回あたり ¥${cpp.toLocaleString()} 払ってた
+
+月${state.visits}回しか行ってないから
+年間¥${Math.floor(r.annualLoss).toLocaleString()}の損失
+
+このまま5年続けると ¥${Math.floor(r.fiveYearLoss).toLocaleString()} の損失😇
+
+#ジム #コスパ #人生数値化 #Takuma`;
+  }
+  return `ジムのコスパ診断してみた💪
+
+1回あたり ¥${cpp.toLocaleString()}
+${cpp <= 2000 ? 'ペイできてる✅' : 'もう少し通えばペイできる⚠️'}
+
+月あと${Math.max(0, r.breakEvenVisits - state.visits)}回増やすだけで
+コスパが劇的に改善する
+
+#ジム #筋トレ #人生数値化 #Takuma`;
+}
+
+const SHARE_URL = 'https://takumabody-ctrl.github.io/mihairisk001/gym_cospa_shindan/';
+
+$('#shareX').addEventListener('click', () => {
+  const text = makeShareText();
+  window.open(`https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(SHARE_URL)}`, '_blank');
+});
+
+$('#shareCopy').addEventListener('click', async () => {
+  const text = makeShareText() + '\n' + SHARE_URL;
+  try {
+    await navigator.clipboard.writeText(text);
+    showToast('コピーしました！');
+  } catch {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+    showToast('コピーしました！');
+  }
+});
+
+function showToast(msg) {
+  const t = $('#toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 1800);
+}
+
+// ============================================
+// INIT
+// ============================================
+renderGymList();
+updateLiveCost();
+showStep(1);
+</script>
+</body>
+</html>
