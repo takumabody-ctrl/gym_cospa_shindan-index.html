@@ -704,6 +704,144 @@ input[type="range"]::-moz-range-thumb {
 }
 
 /* ============================================
+   アフィリエイト: 自宅トレ機材
+   ============================================ */
+.home-gym-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 18px 16px;
+}
+.home-gym-header { text-align: center; margin-bottom: 14px; }
+.home-gym-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.home-gym-title .pr-tag {
+  font-size: 9px;
+  background: rgba(245,158,11,0.15);
+  color: var(--amber);
+  padding: 2px 6px;
+  border-radius: 3px;
+  margin-left: 6px;
+  font-family: 'Orbitron', sans-serif;
+  vertical-align: middle;
+}
+.home-gym-sub {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+}
+.home-gym-sub strong {
+  color: var(--green);
+  font-family: 'Orbitron', sans-serif;
+}
+.aff-products {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.aff-product {
+  display: flex;
+  gap: 12px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px;
+  text-decoration: none;
+  color: inherit;
+  transition: all 0.2s;
+  align-items: center;
+}
+.aff-product:hover {
+  border-color: var(--green);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(34,197,94,0.15);
+}
+.aff-product:active { transform: scale(0.98); }
+.aff-image {
+  width: 84px;
+  height: 84px;
+  border-radius: 8px;
+  overflow: hidden;
+  flex-shrink: 0;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.aff-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.aff-info { flex: 1; min-width: 0; }
+.aff-name {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1.4;
+  margin-bottom: 4px;
+  color: var(--text);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.aff-price {
+  font-family: 'Orbitron', sans-serif;
+  font-weight: 900;
+  font-size: 16px;
+  color: var(--green);
+  text-shadow: 0 0 6px var(--glow-green);
+  margin-bottom: 4px;
+}
+.aff-features {
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.4;
+  margin-bottom: 5px;
+}
+.aff-cta {
+  font-size: 11px;
+  color: var(--green);
+  font-weight: 700;
+  font-family: 'Orbitron', sans-serif;
+  letter-spacing: 0.05em;
+}
+
+.aff-banner {
+  display: block;
+  text-align: center;
+  margin-top: 12px;
+  padding: 12px;
+  background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(212,168,83,0.06));
+  border: 1px solid rgba(245,158,11,0.3);
+  border-radius: 10px;
+  color: var(--amber);
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.2s;
+  letter-spacing: 0.05em;
+}
+.aff-banner:hover {
+  background: linear-gradient(135deg, rgba(245,158,11,0.15), rgba(212,168,83,0.1));
+  border-color: rgba(245,158,11,0.5);
+  transform: translateY(-1px);
+}
+.aff-disclaimer {
+  font-size: 9px;
+  color: var(--dim);
+  text-align: center;
+  margin-top: 10px;
+  line-height: 1.6;
+}
+
+/* ============================================
    修正①: 新note CTA（動的タイトル対応）
    ============================================ */
 .note-cta {
@@ -1236,6 +1374,70 @@ input[type="range"]::-moz-range-thumb {
       <div class="prescription-card">
         <div class="prescription-title">📋 通えていない理由への処方箋</div>
         <div id="prescriptionList"></div>
+      </div>
+    </div>
+
+    <!-- アフィリエイト: 自宅トレ機材 -->
+    <div class="result-section">
+      <div class="section-label">HOME GYM ALTERNATIVE</div>
+      <div class="home-gym-card">
+        <div class="home-gym-header">
+          <div class="home-gym-title">🏠 ジムを解約して自宅トレを始めるなら<span class="pr-tag">PR</span></div>
+          <div class="home-gym-sub" id="homeGymSub">
+            月<strong id="affMonthly">¥0</strong>のジム代を、これだけの機材費に換算できます
+          </div>
+        </div>
+
+        <div class="aff-products">
+          <!-- ダンベル -->
+          <a class="aff-product" href="https://hb.afl.rakuten.co.jp/ichiba/54b464b4.aa3fb362.54b464b5.c63b2e97/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fmotions%2Fmd242%2F&link_type=picttext" target="_blank" rel="nofollow sponsored noopener">
+            <div class="aff-image">
+              <img src="https://hbb.afl.rakuten.co.jp/hgb/54b464b4.aa3fb362.54b464b5.c63b2e97/?me_id=1387493&item_id=10000002&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fmotions%2Fcabinet%2Fmd%2Fmd-24-40_tum_1.jpg%3F_ex%3D240x240&s=240x240&t=picttext" alt="MotionsFit 可変式ダンベル" loading="lazy">
+            </div>
+            <div class="aff-info">
+              <div class="aff-name">🏋️ MotionsFit 可変式ダンベル 24kg/40kg</div>
+              <div class="aff-price">¥8,980〜</div>
+              <div class="aff-features">✓ 省スペース ✓ 静音 ✓ 1個分の場所で20kg相当</div>
+              <div class="aff-cta">楽天で見る →</div>
+            </div>
+          </a>
+
+          <!-- ヨガマット -->
+          <a class="aff-product" href="https://hb.afl.rakuten.co.jp/ichiba/54b46662.93bc8e8c.54b46663.009222e6/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fyiprefer%2Ftra-003%2F&link_type=picttext" target="_blank" rel="nofollow sponsored noopener">
+            <div class="aff-image">
+              <img src="https://hbb.afl.rakuten.co.jp/hgb/54b46662.93bc8e8c.54b46663.009222e6/?me_id=1277095&item_id=10001544&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fyiprefer%2Fcabinet%2Ftra%2Ftra-003-renew_001.jpg%3F_ex%3D240x240&s=240x240&t=picttext" alt="Soomloom ヨガマット" loading="lazy">
+            </div>
+            <div class="aff-info">
+              <div class="aff-name">🧘 Soomloom ヨガマット 10mm/15mm</div>
+              <div class="aff-price">¥1,650〜</div>
+              <div class="aff-features">✓ 極厚クッション ✓ 4サイズ展開 ✓ 収納ケース付き</div>
+              <div class="aff-cta">楽天で見る →</div>
+            </div>
+          </a>
+
+          <!-- プロテイン -->
+          <a class="aff-product" href="https://hb.afl.rakuten.co.jp/ichiba/54b46807.a85c5d16.54b46808.7d67d4b5/?pc=https%3A%2F%2Fitem.rakuten.co.jp%2Fx-plosion%2F10000019%2F&link_type=picttext" target="_blank" rel="nofollow sponsored noopener">
+            <div class="aff-image">
+              <img src="https://hbb.afl.rakuten.co.jp/hgb/54b46807.a85c5d16.54b46808.7d67d4b5/?me_id=1349860&item_id=10000023&pc=https%3A%2F%2Fthumbnail.image.rakuten.co.jp%2F%400_mall%2Fx-plosion%2Fcabinet%2Fyec%2F11362306%2F241227_10000019.jpg%3F_ex%3D240x240&s=240x240&t=picttext" alt="エクスプロージョン プロテイン" loading="lazy">
+            </div>
+            <div class="aff-info">
+              <div class="aff-name">🥛 エクスプロージョン WPCプロテイン 3kg</div>
+              <div class="aff-price">¥11,780</div>
+              <div class="aff-features">✓ 3kg大容量・最安水準 ✓ ミルクチョコ ✓ 高たんぱく</div>
+              <div class="aff-cta">楽天で見る →</div>
+            </div>
+          </a>
+        </div>
+
+        <!-- A8.net 補助バナー -->
+        <a class="aff-banner" href="https://px.a8.net/svt/ejp?a8mat=4B5RS4+3F8SJM+3W82+BZO4H" target="_blank" rel="nofollow sponsored noopener">
+          ▶ 他にも自宅トレ・健康関連の情報を見る
+        </a>
+
+        <div class="aff-disclaimer">
+          ※ 商品リンクは提携先（楽天市場・A8.net）に移動します。<br>
+          価格は変動する可能性があります（2026年6月時点）
+        </div>
       </div>
     </div>
 
@@ -1940,6 +2142,19 @@ function calculate() {
     chocozapSaving, recommendation: rec,
     annualTravelCost, totalAnnualCost
   };
+
+  // アフィリエイト: 自宅トレ機材セクションの動的テキスト
+  const affMonthlyEl = $('#affMonthly');
+  if (affMonthlyEl) {
+    affMonthlyEl.textContent = fmt(monthly);
+    // 3点合計¥22,410 を ジム代何ヶ月分かに換算
+    const homeGymTotal = 8980 + 1650 + 11780; // 22,410円
+    const months = monthly > 0 ? (homeGymTotal / monthly).toFixed(1) : 0;
+    const subEl = $('#homeGymSub');
+    if (subEl && monthly > 0) {
+      subEl.innerHTML = `月<strong>${fmt(monthly)}</strong>のジム代 <strong>${months}ヶ月分</strong> で、ホームジム3点セットが揃います`;
+    }
+  }
 
   // 修正①: note CTAの文言を診断結果に連動させる
   const noteCtaTitle = $('#noteCtaTitle');
